@@ -1,6 +1,6 @@
 .PHONY: all $(NAME) bonus clean fclean re
 
-NAME := libftprintf.a
+NAME := pipex
 
 CC := cc
 
@@ -10,9 +10,9 @@ CFLAGS := -Wall -Wextra -Werror -g
 
 LIBFT := libft
 
-SRCS := pipex.c \
+SRCS := pipex_utils.c \
 
-OBJS := $(SRCS:.c=.o)
+OBJS := pipex_utils.o \
 
 # SRCS_BONUS := bonus/ft_printf_bonus.c bonus/ft_uitoa_hex_bonus.c \
 # 	bonus/ft_ptoa_bonus.c bonus/ft_uitoa_bonus.c  bonus/ft_printf_utils_bonus.c \
@@ -32,7 +32,8 @@ $(OBJS): $(SRCS)
 $(NAME): $(OBJS)
 	make all -C $(LIBFT)
 	cp $(LIBFT)/*.o .
-	ar rcs $(NAME) *.o
+	ar rcs $(NAME).a ./*.o
+	$(CC) $(CFLAGS) $(NAME).c -o $(NAME) $(NAME).a
 
 # bonus: fclean $(OBJS_BONUS)
 # 	make all -C $(LIBFT)
@@ -48,5 +49,6 @@ clean:
 fclean:	clean
 	make fclean -C $(LIBFT)
 	rm -f ./*.a
+	rm -f $(NAME)
 
 re:	fclean all
