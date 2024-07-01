@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 20:07:30 by joneves-          #+#    #+#             */
-/*   Updated: 2024/06/29 20:27:32 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/01 17:43:26 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,6 @@ int		ft_create_outfile(char *path, int fd_in);
 int		ft_execve(int fd_out, char *pathname, char **args);
 void	free_args(char ***args);
 int		ft_checkfile(char *pathname);
-char 	***ft_parser(int argc, char **argv);
+char 	***ft_parser(char **argv);
 
 #endif //PIPEX_H

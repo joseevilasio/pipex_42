@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 17:50:31 by joneves-          #+#    #+#             */
-/*   Updated: 2024/06/27 12:41:59 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/01 18:01:17 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,31 +75,28 @@ int	ft_checkfile(char *pathname)
 	return (0);
 }
 
-char ***ft_parser(int argc, char **argv)
+char ***ft_parser(char **argv)
 {
 	char ***args;
 	char *temp;
 
 	// argv[0]  argv[1]       argv[2]   argv[3]   argv[4]
 	// ./pipex  "../infile"   cmd       cmd       outfile
-	if (argc == 5)
-	{
-		args = (char ***) malloc(3 * sizeof(char **));
+	args = (char ***) malloc(3 * sizeof(char **));
 		if (!args)
-			ft_failure("Malloc", 1);
-		// ft_checkfile(argv[1]);
-		args[0] = ft_split(argv[2], ' ');
-		temp = ft_strjoin("/bin/", args[0][0]);
-		free(args[0][0]);
-		args[0][0] = ft_strdup(temp);
-		free(temp);
-		args[1] = ft_split(argv[3], ' ');
-		temp = ft_strjoin("/bin/", args[1][0]);
-		free(args[1][0]);
-		args[1][0] = ft_strdup(temp);
-		free(temp);
-		args[2] = NULL;		
-	}
+		ft_failure("Malloc", 1);
+	// ft_checkfile(argv[1]);
+	args[0] = ft_split(argv[2], ' ');
+	temp = ft_strjoin("/bin/", args[0][0]);
+	free(args[0][0]);
+	args[0][0] = ft_strdup(temp);
+	free(temp);
+	args[1] = ft_split(argv[3], ' ');
+	temp = ft_strjoin("/bin/", args[1][0]);
+	free(args[1][0]);
+	args[1][0] = ft_strdup(temp);
+	free(temp);
+	args[2] = NULL;	
 	return (args);
 }
 
@@ -122,3 +119,5 @@ void	free_args(char ***args)
 	}
 	free(args);
 }
+
+
