@@ -6,28 +6,22 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 20:07:30 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/01 17:43:26 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/02 12:48:51 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1024
-# endif
-
 # define SUCCESS 0
-# define ERROR_ARGUMENTS 1
-# define ERROR_FILE_OPEN 2
-# define ERROR_FILE_READ 3
-# define ERROR_FILE_WRITE 4
-# define ERROR_FILE_EXIST 5
-# define ERROR_FILE_EXE 6
-# define ERROR_MALLOC 7
-# define ERROR_PIPE 8
-# define ERROR_FORK 9
-# define ERROR_EXECVE 10
+# define ERROR_ARGUMENTS 2
+# define ERROR_FILE_OPEN 3
+# define ERROR_FILE_OPEN_OUT 4
+# define ERROR_FILE_EXIST_OR_READ 5
+# define ERROR_MALLOC 6
+# define ERROR_PIPE 7
+# define ERROR_FORK 8
+# define ERROR_EXECVE 9
 
 # include "libft/libft.h"
 # include <stdio.h>
@@ -35,13 +29,13 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <sys/wait.h>
+# include <string.h>
 # include <errno.h>
 
-void	ft_failure(char *str, int mode);
-int		ft_create_outfile(char *path, int fd_in);
-int		ft_execve(int fd_out, char *pathname, char **args);
-void	free_args(char ***args);
-int		ft_checkfile(char *pathname);
-char 	***ft_parser(char **argv);
+int		ft_ensure_file(char *pathname);
+int		ft_pipex(int fd_in, int fd_out, char *pathname, char ***args, char **args2);
+void	ft_free_args(char ***args);
+void	ft_put_error(char *error, int signal, char ***args);
+char	***ft_parser(char **argv);
 
 #endif //PIPEX_H
