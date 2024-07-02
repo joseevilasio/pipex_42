@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 20:07:30 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/02 12:48:51 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/02 19:44:06 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,16 @@
 # include <string.h>
 # include <errno.h>
 
+typedef struct t_cmds
+{
+	char	*pathname;
+	char	**args;
+}	t_cmds;
+
 int		ft_ensure_file(char *pathname);
-int		ft_pipex(int fd_in, int fd_out, char *pathname, char ***args, char **args2);
 void	ft_free_args(char ***args);
-void	ft_put_error(char *error, int signal, char ***args);
-char	***ft_parser(char **argv);
+void	ft_put_error(char *error, int signal);
+t_cmds	*ft_parser(int argc, char **argv, char **envp);
+char	*ft_findpath(char **envp, char **cmds);
 
 #endif //PIPEX_H

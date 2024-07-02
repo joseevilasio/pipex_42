@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 17:50:31 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/02 18:37:18 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/02 20:20:20 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ void	ft_free_args(char ***args)
 
 int	ft_ensure_file(char *pathname)
 {
-	if (access(pathname, F_OK) != 0 && access(pathname, R_OK) != 0)
+	if (access(pathname, F_OK) != 0 && access(pathname, R_OK) != 0
+		&& access(pathname, X_OK) != 0)
 	{
 		perror("acess");
 		exit (ERROR_FILE_EXIST_OR_READ);
@@ -42,48 +43,73 @@ int	ft_ensure_file(char *pathname)
 	return (0);
 }
 
-void	ft_put_error(char *error, int signal, char ***args)
+void	ft_put_error(char *error, int signal)
 {
 	perror(error);
-	ft_free_args(args);
 	exit (signal);
-}
-
-int	ft_pipex(int fd_in, int fd_out, char *pathname, char ***args, char **args2)
-{
-	dup2(fd_in, STDIN_FILENO);
-	close(fd_in);
-	dup2(fd_out, STDOUT_FILENO);
-	close(fd_out);
-	if (execve(pathname, args2, 0) == -1)
-		ft_put_error("execve()", ERROR_EXECVE, args);
-	return (0);
 }
 
 // argv[0]  argv[1]       argv[2]   argv[3]   argv[4]
 // ./pipex  "../infile"   cmd       cmd       outfile
 
-char	***ft_parser(char **argv)
+char	*ft_findpath(char **envp, char **cmds)
 {
-	char	***args;
-	char	*temp;
+	char	**paths;
+	char	*tmp;
+	char	*pathname;
+	char	*envs;
+	int		i;
 
-	args = (char ***) malloc(3 * sizeof(char **));
-	if (!args)
+	i = 0;
+	while (envp[i])
+	{
+		envs = ft_strnstr(envp[i], "PATH=", 5);
+		if (envs)
+		{
+			i = 0;
+			paths = ft_split(envs + 5, ':');
+			while(paths[i])
+			{
+				tmp = ft_strjoin(paths[i], "/");
+				pathname = ft_strjoin(tmp, cmds[0]);
+				free(tmp);
+				free(paths[i]);
+				if (access(pathname, F_OK) == 0 && access(pathname, X_OK) == 0)
+				{
+					while(paths[i])
+						free(paths[++i]);
+					free(paths);
+					return (pathname);
+				}
+				i++;
+			}
+			return ("");
+		}
+		i++;
+	}
+	return (NULL);
+}
+
+t_cmds	*ft_parser(int argc, char **argv, char **envp)
+{
+	t_cmds	*commands;
+	int		i;
+	int		n;
+
+	i = 2;
+	n = 0;
+	commands = malloc((argc - 3) * sizeof(t_cmds));
+	if (!commands)
 	{
 		perror("malloc()");
 		exit (ERROR_MALLOC);
 	}
-	args[0] = ft_split(argv[2], ' ');
-	temp = ft_strjoin("/bin/", args[0][0]);
-	free(args[0][0]);
-	args[0][0] = ft_strdup(temp);
-	free(temp);
-	args[1] = ft_split(argv[3], ' ');
-	temp = ft_strjoin("/bin/", args[1][0]);
-	free(args[1][0]);
-	args[1][0] = ft_strdup(temp);
-	free(temp);
-	args[2] = NULL;
-	return (args);
+	while (i < (argc - 1))
+	{
+		commands[n].args = ft_split(argv[i], ' ');
+		commands[n].pathname = ft_findpath(envp, commands[n].args);
+		i++;
+		n++;
+	}
+	return (commands);
 }
