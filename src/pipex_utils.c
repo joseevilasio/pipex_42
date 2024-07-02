@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 17:50:31 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/02 12:50:23 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:37:18 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	ft_free_args(char ***args)
 
 int	ft_ensure_file(char *pathname)
 {
-	if (access(pathname, F_OK) || access(pathname, R_OK) != 0)
+	if (access(pathname, F_OK) != 0 && access(pathname, R_OK) != 0)
 	{
 		perror("acess");
 		exit (ERROR_FILE_EXIST_OR_READ);
@@ -59,6 +59,9 @@ int	ft_pipex(int fd_in, int fd_out, char *pathname, char ***args, char **args2)
 		ft_put_error("execve()", ERROR_EXECVE, args);
 	return (0);
 }
+
+// argv[0]  argv[1]       argv[2]   argv[3]   argv[4]
+// ./pipex  "../infile"   cmd       cmd       outfile
 
 char	***ft_parser(char **argv)
 {

@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 22:44:40 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/02 12:56:45 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:34:38 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 //utilizar meu printf
 
-int	main(int argc, char **argv)
+int	main(int argc, char **argv, char **envp)
 {
 	char	***args;
 	pid_t	pid;
@@ -45,7 +45,6 @@ int	main(int argc, char **argv)
 		}
 		else
 		{
-			waitpid(pid, NULL, 0);
 			close(fds[1]);
 			if ((fd_out = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0666)) == -1)
 				ft_put_error("open()", ERROR_FILE_OPEN_OUT, args);
@@ -54,6 +53,28 @@ int	main(int argc, char **argv)
 	}
 	else
 	{
+		// int i = 0;
+		// while (envp[i])
+		// {
+		// 	char *find = ft_strnstr(envp[i], "PATH=", 5);
+		// 	if (find)
+		// 	{
+		// 		char **paths = ft_split(find + 5, ':');
+		// 		char *path;
+		// 		while(*paths)
+		// 		{
+		// 			printf("-- %s\n", *paths);
+		// 			path = ft_strjoin(*paths, "/");
+		// 			path = ft_strjoin(path, argv[2]);
+		// 			printf("%s\n", path);
+		// 			if (access(path, F_OK) == 0 && access(path, X_OK) == 0)
+		// 				printf("find!\n");
+		// 			paths++;
+		// 		}
+		// 		// printf("%s",  find);
+		// 	}
+		// 	i++;
+		// }
 		printf("%s", strerror(EINVAL));
 		exit (ERROR_ARGUMENTS);
 	}
