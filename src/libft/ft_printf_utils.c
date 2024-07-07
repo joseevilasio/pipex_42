@@ -1,25 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_printf_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/16 19:04:39 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/07 15:46:34 by joneves-         ###   ########.fr       */
+/*   Created: 2024/05/05 18:59:10 by joneves-          #+#    #+#             */
+/*   Updated: 2024/07/07 15:56:13 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlen(const char *str)
+int	ft_checklen(char *str, char fmt)
 {
-	size_t	i;
-
-	if (!str)
-		return (0);
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
+	if (fmt == 'c' && !str)
+		return (1);
+	else
+		return (ft_strlen(str));
 }

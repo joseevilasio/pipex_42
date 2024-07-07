@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/21 21:22:19 by joneves-          #+#    #+#             */
-/*   Updated: 2024/04/22 18:56:10 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/07 16:05:34 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,18 @@
 # define LIBFT_H
 # include <unistd.h>
 # include <stdlib.h>
+# include <stdarg.h>
+# include <stdio.h>
 
 typedef struct s_list
 {
 	void			*content;
 	struct s_list	*next;
 }	t_list;
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 10
+# endif
 
 /*Checks c is an alphabetic character.
  -- Return:
@@ -208,5 +214,27 @@ node. Creates a new list resulting of the successive applications of the
 function ’f’. The ’del’ function is used to delete the content of a node if
 needed. */
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void(*del)(void *));
+
+/* -------------- ft_printf without bonus --------------*/
+/* New funticions */
+
+char	*ft_uitoa_hex(unsigned int n);
+char	*ft_uitoa(unsigned int n);
+char	*ft_ptoa(unsigned long n);
+
+/* Utils */
+
+int		ft_checklen(char *str, char fmt);
+
+/* Write a library that contains ft_printf(), a
+function that will mimic the original printf() */
+int		ft_printf(const char *format, ...);
+
+/* -----------------------------------------------------*/
+
+/* Read line: correct behavior
+NULL: there is nothing else to read, or an error
+occurred */
+char	*get_next_line(int fd);
 
 #endif //LIBFT_H
