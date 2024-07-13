@@ -6,19 +6,19 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 17:50:31 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/13 22:04:09 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/13 23:41:12 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	ft_free_args(t_cmds *cmds)
+int	ft_free_args(t_cmds *cmds)
 {
 	int	i;
 	int	x;
 
 	i = 0;
-	while (i != 2)
+	while (cmds[i].args)
 	{
 		x = 0;
 		while (cmds[i].args[x])
@@ -31,13 +31,23 @@ void	ft_free_args(t_cmds *cmds)
 		i++;
 	}
 	free(cmds);
+	return (0);
 }
 
-void	ft_put_error(char *error, int signal, t_cmds *commands)
+void	ft_error_handler(char *error, int signal, t_cmds *cmds, int mode)
 {
-	ft_free_args(commands);
-	perror(error);
-	exit (signal);
+	if (mode == 0)
+	{
+		if (cmds)
+			ft_free_args(cmds);
+		perror(error);
+		exit (signal);
+	}
+	else
+	{
+		ft_printf("pipex: %s", error);
+		exit (signal);
+	}
 }
 
 char	*merge(char *s1, char *s2)
@@ -49,10 +59,6 @@ char	*merge(char *s1, char *s2)
 	s1 = NULL;
 	return (merge);
 }
-
-
-// argv[0]  argv[1]       argv[2]   argv[3]   argv[4]
-// ./pipex  "../infile"   cmd       cmd       outfile
 
 char	*ft_findpath(char **envp, char **cmds)
 {
@@ -91,30 +97,27 @@ char	*ft_findpath(char **envp, char **cmds)
 
 t_cmds	*ft_parser(int argc, char **argv, char **envp)
 {
-	t_cmds	*commands;
+	t_cmds	*cmds;
 	char	*pathname;
 	int		i;
 	int		n;
 
 	i = 2;
 	n = 0;
-	commands = (t_cmds *) malloc(3 * sizeof(t_cmds));
-	if (!commands)
-	{
-		perror("malloc()");
-		exit (ERROR_MALLOC);
-	}
+	cmds = (t_cmds *) malloc((argc - 2) * sizeof(t_cmds));
+	if (!cmds)
+		ft_error_handler("malloc()", ERROR_MALLOC, NULL, 0);
 	while (i < (argc - 1))
 	{
-		commands[n].args = ft_split(argv[i], ' ');
-		pathname = ft_findpath(envp, commands[n].args);
+		cmds[n].args = ft_split(argv[i], ' ');
+		pathname = ft_findpath(envp, cmds[n].args);
 		if (!pathname)
-			ft_printf("pipex: Command not found: %s", commands[n].args[0]);
-		commands[n].pathname = pathname;
+			ft_printf("pipex: Command not found: %s", cmds[n].args[0]);
+		cmds[n].pathname = pathname;
 		i++;
 		n++;
 	}
-	commands[n].args = NULL;
-	commands[n].pathname = NULL;
-	return (commands);
+	cmds[n].args = NULL;
+	cmds[n].pathname = NULL;
+	return (cmds);
 }
