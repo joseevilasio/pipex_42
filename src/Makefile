@@ -31,9 +31,9 @@ $(OBJS): $(SRCS)
 
 $(NAME): $(OBJS)
 	make all -C $(LIBFT)
-	cp $(LIBFT)/*.o .
+#	cp $(LIBFT)/*.o .
 	ar rcs $(NAME).a ./*.o
-	$(CC) $(CFLAGS) $(NAME).c -o $(NAME) $(NAME).a
+	$(CC) $(CFLAGS) $(NAME).c -o $(NAME) $(NAME).a $(LIBFT)/$(LIBFT).a
 
 # bonus: fclean $(OBJS_BONUS)
 # 	make all -C $(LIBFT)

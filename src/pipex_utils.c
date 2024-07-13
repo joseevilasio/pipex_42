@@ -6,48 +6,50 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 17:50:31 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/02 20:20:20 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/13 22:04:09 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	ft_free_args(char ***args)
+void	ft_free_args(t_cmds *cmds)
 {
 	int	i;
 	int	x;
 
 	i = 0;
-	while (args[i])
+	while (i != 2)
 	{
 		x = 0;
-		while (args[i][x])
+		while (cmds[i].args[x])
 		{
-			free(args[i][x]);
+			free(cmds[i].args[x]);
 			x++;
 		}
-		free(args[i]);
+		free(cmds[i].args);
+		free(cmds[i].pathname);
 		i++;
 	}
-	free(args);
+	free(cmds);
 }
 
-int	ft_ensure_file(char *pathname)
+void	ft_put_error(char *error, int signal, t_cmds *commands)
 {
-	if (access(pathname, F_OK) != 0 && access(pathname, R_OK) != 0
-		&& access(pathname, X_OK) != 0)
-	{
-		perror("acess");
-		exit (ERROR_FILE_EXIST_OR_READ);
-	}
-	return (0);
-}
-
-void	ft_put_error(char *error, int signal)
-{
+	ft_free_args(commands);
 	perror(error);
 	exit (signal);
 }
+
+char	*merge(char *s1, char *s2)
+{
+	char	*merge;
+
+	merge = ft_strjoin(s1, s2);
+	free(s1);
+	s1 = NULL;
+	return (merge);
+}
+
 
 // argv[0]  argv[1]       argv[2]   argv[3]   argv[4]
 // ./pipex  "../infile"   cmd       cmd       outfile
@@ -55,50 +57,48 @@ void	ft_put_error(char *error, int signal)
 char	*ft_findpath(char **envp, char **cmds)
 {
 	char	**paths;
-	char	*tmp;
 	char	*pathname;
-	char	*envs;
 	int		i;
 
 	i = 0;
-	while (envp[i])
+	if (access(cmds[0], F_OK) == 0 && access(cmds[0], X_OK) == 0)
+		return (cmds[0]);
+	else if (envp[i])
 	{
-		envs = ft_strnstr(envp[i], "PATH=", 5);
-		if (envs)
+		while (!ft_strnstr(envp[i], "PATH=", 5))
+			i++;
+		paths = ft_split(envp[i] + 5, ':');
+		i = 0;
+		while (paths[i])
 		{
-			i = 0;
-			paths = ft_split(envs + 5, ':');
-			while(paths[i])
+			pathname = merge(merge(paths[i], "/"), cmds[0]);
+			if (access(pathname, F_OK) == 0 && access(pathname, X_OK) == 0)
 			{
-				tmp = ft_strjoin(paths[i], "/");
-				pathname = ft_strjoin(tmp, cmds[0]);
-				free(tmp);
-				free(paths[i]);
-				if (access(pathname, F_OK) == 0 && access(pathname, X_OK) == 0)
-				{
-					while(paths[i])
-						free(paths[++i]);
-					free(paths);
-					return (pathname);
-				}
-				i++;
+				while (paths[++i])
+					free(paths[i]);
+				free(paths);
+				return (pathname);
 			}
-			return ("");
+			free(pathname);
+			pathname = NULL;
+			i++;
 		}
-		i++;
 	}
+	free(pathname);
+	free(paths);
 	return (NULL);
 }
 
 t_cmds	*ft_parser(int argc, char **argv, char **envp)
 {
 	t_cmds	*commands;
+	char	*pathname;
 	int		i;
 	int		n;
 
 	i = 2;
 	n = 0;
-	commands = malloc((argc - 3) * sizeof(t_cmds));
+	commands = (t_cmds *) malloc(3 * sizeof(t_cmds));
 	if (!commands)
 	{
 		perror("malloc()");
@@ -107,9 +107,14 @@ t_cmds	*ft_parser(int argc, char **argv, char **envp)
 	while (i < (argc - 1))
 	{
 		commands[n].args = ft_split(argv[i], ' ');
-		commands[n].pathname = ft_findpath(envp, commands[n].args);
+		pathname = ft_findpath(envp, commands[n].args);
+		if (!pathname)
+			ft_printf("pipex: Command not found: %s", commands[n].args[0]);
+		commands[n].pathname = pathname;
 		i++;
 		n++;
 	}
+	commands[n].args = NULL;
+	commands[n].pathname = NULL;
 	return (commands);
 }
