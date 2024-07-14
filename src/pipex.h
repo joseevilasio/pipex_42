@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 20:07:30 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/13 23:41:12 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/14 11:45:48 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ typedef struct t_cmds
 }	t_cmds;
 
 int		ft_free_args(t_cmds *cmds);
+int		ft_free_paths(char **paths, int i);
 void	ft_error_handler(char *error, int signal, t_cmds *cmds, int mode);
-t_cmds	*ft_parser(int argc, char **argv, char **envp);
 char	*ft_findpath(char **envp, char **cmds);
 char	*merge(char *s1, char *s2);
 

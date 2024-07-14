@@ -6,11 +6,38 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 22:44:40 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/13 23:41:12 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/14 11:44:52 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+static t_cmds	*ft_parser(int argc, char **argv, char **envp)
+{
+	t_cmds	*cmds;
+	char	*pathname;
+	int		i;
+	int		n;
+
+	i = 2;
+	n = 0;
+	cmds = (t_cmds *) malloc((argc - 2) * sizeof(t_cmds));
+	if (!cmds)
+		ft_error_handler("malloc()", ERROR_MALLOC, NULL, 0);
+	while (i < (argc - 1))
+	{
+		cmds[n].args = ft_split(argv[i], ' ');
+		pathname = ft_findpath(envp, cmds[n].args);
+		if (!pathname)
+			ft_printf("pipex: Command not found: %s", cmds[n].args[0]);
+		cmds[n].pathname = pathname;
+		i++;
+		n++;
+	}
+	cmds[n].args = NULL;
+	cmds[n].pathname = NULL;
+	return (cmds);
+}
 
 static int	ft_open(char *pathname, int mode, t_cmds *cmds)
 {
@@ -80,7 +107,6 @@ int	main(int argc, char **argv, char **envp)
 		close(fds[1]);
 		if (ft_pipex(fds[0], ft_open(argv[4], 2, cmds), cmds[1], envp) == -1)
 			ft_error_handler("execve()", ERROR_EXECVE, cmds, 0);
-		wait(NULL);
 	}
 	return (ft_free_args(cmds));
 }

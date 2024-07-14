@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 17:50:31 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/13 23:41:12 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/14 11:46:16 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,14 @@ int	ft_free_args(t_cmds *cmds)
 		i++;
 	}
 	free(cmds);
+	return (0);
+}
+
+int	ft_free_paths(char **paths, int i)
+{
+	while (paths[++i])
+		free(paths[i]);
+	free(paths);
 	return (0);
 }
 
@@ -79,45 +87,12 @@ char	*ft_findpath(char **envp, char **cmds)
 		{
 			pathname = merge(merge(paths[i], "/"), cmds[0]);
 			if (access(pathname, F_OK) == 0 && access(pathname, X_OK) == 0)
-			{
-				while (paths[++i])
-					free(paths[i]);
-				free(paths);
-				return (pathname);
-			}
+				return (ft_free_paths(paths, i), pathname);
 			free(pathname);
 			pathname = NULL;
 			i++;
 		}
 	}
 	free(pathname);
-	free(paths);
-	return (NULL);
-}
-
-t_cmds	*ft_parser(int argc, char **argv, char **envp)
-{
-	t_cmds	*cmds;
-	char	*pathname;
-	int		i;
-	int		n;
-
-	i = 2;
-	n = 0;
-	cmds = (t_cmds *) malloc((argc - 2) * sizeof(t_cmds));
-	if (!cmds)
-		ft_error_handler("malloc()", ERROR_MALLOC, NULL, 0);
-	while (i < (argc - 1))
-	{
-		cmds[n].args = ft_split(argv[i], ' ');
-		pathname = ft_findpath(envp, cmds[n].args);
-		if (!pathname)
-			ft_printf("pipex: Command not found: %s", cmds[n].args[0]);
-		cmds[n].pathname = pathname;
-		i++;
-		n++;
-	}
-	cmds[n].args = NULL;
-	cmds[n].pathname = NULL;
-	return (cmds);
+	return (free(paths), NULL);
 }
