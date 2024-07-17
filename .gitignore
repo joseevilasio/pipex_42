@@ -52,3 +52,6 @@ Mkfile.old
 dkms.conf
 en.subject_pipex.pdf
 /pipex-tester/
+assets/
+outfile
+pipex
