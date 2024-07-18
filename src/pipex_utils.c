@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 17:50:31 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/14 11:46:16 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/18 18:07:47 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,8 @@ char	*ft_findpath(char **envp, char **cmds)
 			pathname = NULL;
 			i++;
 		}
+		free(pathname);
+		free(paths);
 	}
-	free(pathname);
-	return (free(paths), NULL);
+	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 20:07:38 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/07 15:56:13 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/18 18:10:43 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ static char	*ft_format(va_list args, const char fmt)
 {
 	char	*specifier;
 
+	specifier = NULL;
 	if (fmt == 'c')
 		specifier = ctoa(va_arg(args, int));
 	else if (fmt == 's')
