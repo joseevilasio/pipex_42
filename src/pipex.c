@@ -6,38 +6,11 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 22:44:40 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/14 11:58:53 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/21 13:43:54 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-static t_cmds	*ft_parser(int argc, char **argv, char **envp)
-{
-	t_cmds	*cmds;
-	char	*pathname;
-	int		i;
-	int		n;
-
-	i = 2;
-	n = 0;
-	cmds = (t_cmds *) malloc((argc - 2) * sizeof(t_cmds));
-	if (!cmds)
-		ft_error_handler("malloc()", ERROR_MALLOC, NULL, 0);
-	while (i < (argc - 1))
-	{
-		cmds[n].args = ft_split(argv[i], ' ');
-		pathname = ft_findpath(envp, cmds[n].args);
-		if (!pathname)
-			ft_printf("pipex: Command not found: %s", cmds[n].args[0]);
-		cmds[n].pathname = pathname;
-		i++;
-		n++;
-	}
-	cmds[n].args = NULL;
-	cmds[n].pathname = NULL;
-	return (cmds);
-}
 
 static int	ft_open(char *pathname, int mode, t_cmds *cmds)
 {
@@ -45,16 +18,15 @@ static int	ft_open(char *pathname, int mode, t_cmds *cmds)
 
 	if (mode == 1)
 	{
-		if (access(pathname, F_OK) != 0 && access(pathname, R_OK) != 0
-			&& access(pathname, X_OK) != 0)
+		if (access(pathname, F_OK) != 0 || access(pathname, R_OK) != 0)
 		{
-			perror("open()");
+			perror("access()");
 			fd = open("/dev/null", O_RDONLY);
 		}
 		else
 			fd = open(pathname, O_RDONLY);
 	}
-	if (mode == 2)
+	else if (mode == 2)
 		fd = open(pathname, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (fd == -1)
 	{
@@ -63,14 +35,14 @@ static int	ft_open(char *pathname, int mode, t_cmds *cmds)
 	return (fd);
 }
 
-static int	ft_pipex(int fd_in, int fd_out, t_cmds cmds, char **envp)
+static int	ft_execve(t_cmds cmds, char **envp)
 {
 	if (!cmds.pathname)
-		fd_in = open("/dev/null", O_RDONLY);
-	dup2(fd_in, STDIN_FILENO);
-	close(fd_in);
-	dup2(fd_out, STDOUT_FILENO);
-	close(fd_out);
+	{
+		int fd_in = open("/dev/null", O_RDONLY);
+		dup2(fd_in, STDIN_FILENO);
+		close(fd_in);
+	}
 	if (cmds.pathname)
 	{
 		if (execve(cmds.pathname, cmds.args, envp) == -1)
@@ -82,31 +54,64 @@ static int	ft_pipex(int fd_in, int fd_out, t_cmds cmds, char **envp)
 	return (0);
 }
 
+static void ft_child_process(int *fds, t_cmds *cmds, int i, char **envp)
+{
+	int	fd;
+
+	close(fds[0]);
+	if (i == 0)
+	{
+		fd = ft_open(cmds[i].fd_in, 1, cmds);
+		dup2(fd, STDIN_FILENO);
+		close(fd);
+	}
+	if (i == cmds[0].end)
+	{
+		fd = ft_open(cmds[i].fd_out, 2, cmds);
+		dup2(fd, STDOUT_FILENO);
+		close(fd);
+	}
+	else
+	{
+		dup2(fds[1], STDOUT_FILENO);
+		close(fds[1]);
+	}
+	if (ft_execve(cmds[i], envp) == -1)
+		ft_error_handler("execve()", ERROR_EXECVE, cmds, 0);
+}
+
+static void ft_parent_process(int *fds)
+{
+	close(fds[1]);
+	dup2(fds[0], STDIN_FILENO);
+	close(fds[0]);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_cmds	*cmds;
-	pid_t	pid;
+	pid_t	*pid;
 	int		fds[2];
+	int		i = 0;
 
 	if (argc != 5)
 		ft_error_handler(strerror(EINVAL), ERROR_ARGUMENTS, NULL, 1);
 	cmds = ft_parser(argc, argv, envp);
-	if (pipe(fds) == -1)
-		ft_error_handler("pipe()", ERROR_PIPE, cmds, 0);
-	pid = fork();
-	if (pid == -1)
-		ft_error_handler("fork()", ERROR_FORK, cmds, 0);
-	if (pid == 0)
+	pid = malloc ((argc - 3) * sizeof(pid_t));
+	if (!pid)
+		ft_error_handler("malloc()", ERROR_MALLOC, cmds, 0);
+	while (cmds[i].args)
 	{
-		close(fds[0]);
-		if (ft_pipex(ft_open(argv[1], 1, cmds), fds[1], cmds[0], envp) == -1)
-			ft_error_handler("execve()", ERROR_EXECVE, cmds, 0);
+		if (pipe(fds) == -1)
+			ft_error_handler("pipe()", ERROR_PIPE, cmds, 0);
+		pid[i] = fork();
+		if (pid[i] == -1)
+			ft_error_handler("fork()", ERROR_FORK, cmds, 0);
+		if (pid[i] == 0)
+			ft_child_process(fds, cmds, i, envp);
+		ft_parent_process(fds);
+		i++;
 	}
-	else
-	{
-		close(fds[1]);
-		if (ft_pipex(fds[0], ft_open(argv[4], 2, cmds), cmds[1], envp) == -1)
-			ft_error_handler("execve()", ERROR_EXECVE, cmds, 0);
-	}
+	free(pid);
 	return (ft_free_args(cmds));
 }

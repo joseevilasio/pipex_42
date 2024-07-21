@@ -10,9 +10,9 @@ CFLAGS := -Wall -Wextra -Werror -g
 
 LIBFT := libft
 
-SRCS := pipex_utils.c \
+SRCS := pipex_utils.c ft_parser.c \
 
-OBJS := pipex_utils.o \
+OBJS := pipex_utils.o  ft_parser.o\
 
 SRCS_BONUS := bonus/pipex_utils_bonus.c \
 

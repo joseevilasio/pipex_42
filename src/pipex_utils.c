@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 17:50:31 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/18 18:07:47 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/21 13:45:03 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,44 +56,4 @@ void	ft_error_handler(char *error, int signal, t_cmds *cmds, int mode)
 		ft_printf("pipex: %s", error);
 		exit (signal);
 	}
-}
-
-char	*merge(char *s1, char *s2)
-{
-	char	*merge;
-
-	merge = ft_strjoin(s1, s2);
-	free(s1);
-	s1 = NULL;
-	return (merge);
-}
-
-char	*ft_findpath(char **envp, char **cmds)
-{
-	char	**paths;
-	char	*pathname;
-	int		i;
-
-	i = 0;
-	if (access(cmds[0], F_OK) == 0 && access(cmds[0], X_OK) == 0)
-		return (cmds[0]);
-	else if (envp[i])
-	{
-		while (!ft_strnstr(envp[i], "PATH=", 5))
-			i++;
-		paths = ft_split(envp[i] + 5, ':');
-		i = 0;
-		while (paths[i])
-		{
-			pathname = merge(merge(paths[i], "/"), cmds[0]);
-			if (access(pathname, F_OK) == 0 && access(pathname, X_OK) == 0)
-				return (ft_free_paths(paths, i), pathname);
-			free(pathname);
-			pathname = NULL;
-			i++;
-		}
-		free(pathname);
-		free(paths);
-	}
-	return (NULL);
 }
