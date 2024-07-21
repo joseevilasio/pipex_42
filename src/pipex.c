@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 22:44:40 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/21 13:43:54 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/21 14:29:30 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,11 @@ static int	ft_open(char *pathname, int mode, t_cmds *cmds)
 
 static int	ft_execve(t_cmds cmds, char **envp)
 {
+	int	fd_in;
+
 	if (!cmds.pathname)
 	{
-		int fd_in = open("/dev/null", O_RDONLY);
+		fd_in = open("/dev/null", O_RDONLY);
 		dup2(fd_in, STDIN_FILENO);
 		close(fd_in);
 	}
@@ -54,7 +56,7 @@ static int	ft_execve(t_cmds cmds, char **envp)
 	return (0);
 }
 
-static void ft_child_process(int *fds, t_cmds *cmds, int i, char **envp)
+static void	ft_child_process(int *fds, t_cmds *cmds, int i, char **envp)
 {
 	int	fd;
 
@@ -80,7 +82,7 @@ static void ft_child_process(int *fds, t_cmds *cmds, int i, char **envp)
 		ft_error_handler("execve()", ERROR_EXECVE, cmds, 0);
 }
 
-static void ft_parent_process(int *fds)
+static void	ft_parent_process(int *fds)
 {
 	close(fds[1]);
 	dup2(fds[0], STDIN_FILENO);
@@ -92,8 +94,9 @@ int	main(int argc, char **argv, char **envp)
 	t_cmds	*cmds;
 	pid_t	*pid;
 	int		fds[2];
-	int		i = 0;
+	int		i;
 
+	i = 0;
 	if (argc != 5)
 		ft_error_handler(strerror(EINVAL), ERROR_ARGUMENTS, NULL, 1);
 	cmds = ft_parser(argc, argv, envp);
@@ -112,6 +115,5 @@ int	main(int argc, char **argv, char **envp)
 		ft_parent_process(fds);
 		i++;
 	}
-	free(pid);
-	return (ft_free_args(cmds));
+	return (free(pid), ft_free_args(cmds));
 }

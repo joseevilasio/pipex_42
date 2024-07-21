@@ -12,11 +12,11 @@ LIBFT := libft
 
 SRCS := pipex_utils.c ft_parser.c \
 
-OBJS := pipex_utils.o  ft_parser.o\
+OBJS := pipex_utils.o  ft_parser.o \
 
-SRCS_BONUS := bonus/pipex_utils_bonus.c \
+SRCS_BONUS := bonus/pipex_utils_bonus.c bonus/ft_parser_bonus.c \
 
-OBJS_BONUS :=  bonus/pipex_utils_bonus.o \
+OBJS_BONUS :=  bonus/pipex_utils_bonus.o  bonus/ft_parser_bonus.o \
 
 all:	$(NAME)
 
@@ -39,10 +39,13 @@ bonus: fclean $(OBJS_BONUS)
 clean:
 	make clean -C $(LIBFT)
 	rm -f ./*.o
+	rm -f ./bonus/*.o
 
 fclean:	clean
 	make fclean -C $(LIBFT)
 	rm -f ./*.a
+	rm -f ./bonus/*.a
 	rm -f $(NAME)
+	rm -f ./bonus/$(NAME)
 
 re:	fclean all

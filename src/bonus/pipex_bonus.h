@@ -6,12 +6,12 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 20:07:30 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/14 11:55:31 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/21 13:56:30 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#ifndef PIPEX_BONUS_H
+# define PIPEX_BONUS_H
 
 # define SUCCESS 0
 # define ERROR_ARGUMENTS 2
@@ -37,22 +37,20 @@ typedef struct t_cmds
 {
 	char	*pathname;
 	char	**args;
+	char	*fd_in;
+	char	*fd_out;
+	int		end;
 }	t_cmds;
 
 int		ft_free_args(t_cmds *cmds);
 int		ft_free_paths(char **paths, int i);
 void	ft_error_handler(char *error, int signal, t_cmds *cmds, int mode);
-char	*ft_findpath(char **envp, char **cmds);
-char	*merge(char *s1, char *s2);
+
+t_cmds	*ft_parser(int argc, char **argv, char **envp);
 
 // ref https://www.rozmichelle.com/pipes-forks-dups/
 
 // argv[0]  argv[1]       argv[2]   argv[3]   argv[4]
 // ./pipex  "../infile"   cmd       cmd       outfile
 
-//refator main
-//refataror free
-
-//utilizar meu printf
-
-#endif //PIPEX_H
+#endif //PIPEX_BONUS_H
