@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/21 13:41:12 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/21 13:53:48 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/21 23:36:30 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,15 +61,16 @@ t_cmds	*ft_parser(int argc, char **argv, char **envp)
 	cmds = (t_cmds *) malloc((argc - 2) * sizeof(t_cmds));
 	if (!cmds)
 		ft_error_handler("malloc()", ERROR_MALLOC, NULL, 0);
-	while ((n + 2) < (argc - 1))
+	while ((n + 3) < (argc - 1))
 	{
-		cmds[n].args = ft_split(argv[n + 2], ' ');
+		cmds[n].args = ft_split(argv[n + 3], ' ');// para here doc aqui n + 3 do contrario n + 2
 		pathname = ft_findpath(envp, cmds[n].args);
 		if (!pathname)
 			ft_printf("pipex: Command not found: %s", cmds[n].args[0]);
 		cmds[n].pathname = pathname;
 		cmds[n].fd_in = argv[1];
 		cmds[n].fd_out = argv[argc - 1];
+		cmds[n].limiter = argv[2]; //alteracao
 		cmds[n].end = argc - 4;
 		n++;
 	}

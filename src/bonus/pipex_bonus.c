@@ -6,13 +6,13 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 22:44:40 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/21 14:30:12 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/21 23:38:22 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
-static int	ft_open(char *pathname, int mode, t_cmds *cmds)
+int	ft_open(char *pathname, int mode, t_cmds *cmds)
 {
 	int	fd;
 
@@ -63,7 +63,11 @@ static void	ft_child_process(int *fds, t_cmds *cmds, int i, char **envp)
 	close(fds[0]);
 	if (i == 0)
 	{
-		fd = ft_open(cmds[i].fd_in, 1, cmds);
+		if (ft_strncmp(cmds[0].fd_in, "here_doc", 8) == 0) //alteracao
+			fd = ft_heredoc(cmds[0].limiter, cmds);
+		else
+			fd = ft_open(cmds[i].fd_in, 1, cmds);
+		ft_printf(" -- %d --", fd);
 		dup2(fd, STDIN_FILENO);
 		close(fd);
 	}
@@ -97,7 +101,7 @@ int	main(int argc, char **argv, char **envp)
 	int		i;
 
 	i = 0;
-	if (argc < 5)
+	if (ft_check(argc, argv) == -1)
 		ft_error_handler(strerror(EINVAL), ERROR_ARGUMENTS, NULL, 1);
 	cmds = ft_parser(argc, argv, envp);
 	pid = malloc ((argc - 3) * sizeof(pid_t));
@@ -112,6 +116,7 @@ int	main(int argc, char **argv, char **envp)
 			ft_error_handler("fork()", ERROR_FORK, cmds, 0);
 		if (pid[i] == 0)
 			ft_child_process(fds, cmds, i, envp);
+		waitpid(pid[i], NULL, 0); //alteracao
 		ft_parent_process(fds);
 		i++;
 	}

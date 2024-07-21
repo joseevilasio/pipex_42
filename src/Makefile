@@ -14,9 +14,11 @@ SRCS := pipex_utils.c ft_parser.c \
 
 OBJS := pipex_utils.o  ft_parser.o \
 
-SRCS_BONUS := bonus/pipex_utils_bonus.c bonus/ft_parser_bonus.c \
+SRCS_BONUS := bonus/pipex_utils_bonus.c bonus/ft_parser_bonus.c  \
+			bonus/ft_heredoc_bonus.c\
 
 OBJS_BONUS :=  bonus/pipex_utils_bonus.o  bonus/ft_parser_bonus.o \
+			bonus/ft_heredoc_bonus.o\
 
 all:	$(NAME)
 

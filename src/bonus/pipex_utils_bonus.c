@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 17:50:31 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/21 13:50:43 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/21 15:28:31 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,13 @@ void	ft_error_handler(char *error, int signal, t_cmds *cmds, int mode)
 		ft_printf("pipex: %s", error);
 		exit (signal);
 	}
+}
+
+int	ft_check(int argc, char **argv)
+{
+	if (argc == 6 && ft_strncmp("here_doc", argv[1], 8) == 0)
+		return (0);
+	else if (argc < 5)
+		return (-1);
+	return (0);
 }
