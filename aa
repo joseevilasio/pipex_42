@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_parser_bonus.c                                  :+:      :+:    :+:   */
+/*   aa                                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/21 13:41:12 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/24 23:13:30 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/24 23:09:06 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,34 +41,50 @@ static char	*ft_findpath(char **envp, char **cmds)
 	return (NULL);
 }
 
+static void	setup_cmds(t_cmds *cmds)
+{
+	cmds->pathname = NULL;
+	cmds->args = NULL;
+	cmds->fd_in = NULL;
+	cmds->fd_out = NULL;
+	cmds->limiter = NULL;
+	cmds->end = 0;
+	cmds->mode_outfile = 0;
+}
+
+static int	is_heredoc(char *argument)
+{
+	if (ft_strncmp(argument, "here_doc", 8) == 0)
+		return (3);
+	else
+		return (2);
+}
+
 t_cmds	*ft_parser(int argc, char **argv, char **envp)
 {
 	t_cmds	*cmds;
 	char	*pathname;
 	int		n;
-	int		x; //here
 
-	x = 2;
-	if (ft_strncmp(argv[1], "here_doc", 8) == 0) //here
-		x = 3; //here
 	n = 0;
 	cmds = (t_cmds *) malloc((argc - 2) * sizeof(t_cmds));
 	if (!cmds)
 		ft_error_handler("malloc()", ERROR_MALLOC, NULL, 0);
-	while ((n + x) < (argc - 1))
+	while ((n + is_heredoc(argv[1])) < (argc - 1))
 	{
-		cmds[n].args = ft_split(argv[n + x], ' ');// para here doc aqui n + 3 do contrario n + 2
+		cmds[n].args = ft_split(argv[n + is_heredoc(argv[1])], ' ');
 		pathname = ft_findpath(envp, cmds[n].args);
 		if (!pathname)
 			ft_printf("pipex: Command not found: %s", cmds[n].args[0]);
 		cmds[n].pathname = pathname;
 		cmds[n].fd_in = argv[1];
 		cmds[n].fd_out = argv[argc - 1];
-		cmds[n].limiter = argv[2]; //alteracao
-		cmds[n].end = argc - (2 + x);
+		cmds[n].limiter = argv[2];
+		cmds[n].end = argc - (2 + is_heredoc(argv[1]));
+		cmds[n].mode_outfile = is_heredoc(argv[1]);
 		n++;
 	}
-	cmds[n].args = NULL;
-	cmds[n].pathname = NULL;
+	setup_cmds(&cmds[n]);
+	ft_printf("---->%d\n", cmds[0].mode_outfile);
 	return (cmds);
 }

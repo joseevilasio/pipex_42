@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 20:07:30 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/21 23:28:45 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/24 22:51:57 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,17 @@
 # define PIPEX_BONUS_H
 
 # define SUCCESS 0
-# define ERROR_ARGUMENTS 2
-# define ERROR_FILE_OPEN 3
-# define ERROR_FILE_OPEN_OUT 4
-# define ERROR_FILE_EXIST_OR_READ 5
-# define ERROR_MALLOC 6
-# define ERROR_PIPE 7
-# define ERROR_FORK 8
-# define ERROR_EXECVE 9
-# define ERROR_NOT_FOUND 10
+# define ERROR_ARGUMENTS 1
+# define ERROR_FILE_OPEN 2
+# define ERROR_FILE_OPEN_OUT 3
+# define ERROR_FILE_EXIST_OR_READ 4
+# define ERROR_MALLOC 5
+# define ERROR_PIPE 6
+# define ERROR_FORK 7
+# define ERROR_EXECVE 8
+# define ERROR_NOT_FOUND 9 
+# define ERROR_WRITE 10
+# define ERROR_READ 11
 
 # include "../libft/libft.h"
 # include <stdio.h>
@@ -41,17 +43,20 @@ typedef struct t_cmds
 	char	*fd_out;
 	char	*limiter;
 	int		end;
+	int		mode_outfile;
 }	t_cmds;
 
+/* Utils */
 int		ft_free_args(t_cmds *cmds);
 int		ft_free_paths(char **paths, int i);
 int		ft_check(int argc, char **argv);
 void	ft_error_handler(char *error, int signal, t_cmds *cmds, int mode);
+char	*merge(char *s1, char *s2);
 
 t_cmds	*ft_parser(int argc, char **argv, char **envp);
 int		ft_heredoc(char *limiter, t_cmds *cmds);
 
-int	ft_open(char *pathname, int mode, t_cmds *cmds);
+int		ft_open(char *pathname, int mode, t_cmds *cmds);
 
 // ref https://www.rozmichelle.com/pipes-forks-dups/
 

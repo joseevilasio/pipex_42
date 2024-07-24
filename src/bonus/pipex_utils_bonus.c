@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 17:50:31 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/21 15:28:31 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/24 22:45:42 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,14 @@ int	ft_check(int argc, char **argv)
 	else if (argc < 5)
 		return (-1);
 	return (0);
+}
+
+char	*merge(char *s1, char *s2)
+{
+	char	*merge;
+
+	merge = ft_strjoin(s1, s2);
+	free(s1);
+	s1 = NULL;
+	return (merge);
 }

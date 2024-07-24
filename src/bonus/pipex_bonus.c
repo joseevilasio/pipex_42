@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 22:44:40 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/21 23:38:22 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/24 23:15:21 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ int	ft_open(char *pathname, int mode, t_cmds *cmds)
 			fd = open(pathname, O_RDONLY);
 	}
 	else if (mode == 2)
-		fd = open(pathname, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+		fd = open(pathname, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	else if (mode == 3)
+		fd = open(pathname, O_WRONLY | O_CREAT | O_APPEND, 0777);
 	if (fd == -1)
 	{
 		ft_error_handler("open()", ERROR_FILE_OPEN, cmds, 0);
@@ -63,17 +65,17 @@ static void	ft_child_process(int *fds, t_cmds *cmds, int i, char **envp)
 	close(fds[0]);
 	if (i == 0)
 	{
-		if (ft_strncmp(cmds[0].fd_in, "here_doc", 8) == 0) //alteracao
+		if (ft_strncmp(cmds[0].fd_in, "here_doc", 8) == 0)
 			fd = ft_heredoc(cmds[0].limiter, cmds);
 		else
 			fd = ft_open(cmds[i].fd_in, 1, cmds);
-		ft_printf(" -- %d --", fd);
 		dup2(fd, STDIN_FILENO);
 		close(fd);
+		unlink(".tmp");
 	}
 	if (i == cmds[0].end)
 	{
-		fd = ft_open(cmds[i].fd_out, 2, cmds);
+		fd = ft_open(cmds[i].fd_out, 3, cmds);
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
 	}
@@ -86,8 +88,10 @@ static void	ft_child_process(int *fds, t_cmds *cmds, int i, char **envp)
 		ft_error_handler("execve()", ERROR_EXECVE, cmds, 0);
 }
 
-static void	ft_parent_process(int *fds)
+static void	ft_parent_process(int *fds, pid_t pid)
 {
+	//alteracao // verificar se wait precisa se com if por conta de timeout
+	waitpid(pid, NULL, 0);
 	close(fds[1]);
 	dup2(fds[0], STDIN_FILENO);
 	close(fds[0]);
@@ -116,8 +120,7 @@ int	main(int argc, char **argv, char **envp)
 			ft_error_handler("fork()", ERROR_FORK, cmds, 0);
 		if (pid[i] == 0)
 			ft_child_process(fds, cmds, i, envp);
-		waitpid(pid[i], NULL, 0); //alteracao
-		ft_parent_process(fds);
+		ft_parent_process(fds, pid[i]);
 		i++;
 	}
 	return (free(pid), ft_free_args(cmds));
