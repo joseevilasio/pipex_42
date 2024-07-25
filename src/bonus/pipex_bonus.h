@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 20:07:30 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/24 22:51:57 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/25 22:32:18 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,15 +48,13 @@ typedef struct t_cmds
 
 /* Utils */
 int		ft_free_args(t_cmds *cmds);
-int		ft_free_paths(char **paths, int i);
 int		ft_check(int argc, char **argv);
+int		ft_open(char *pathname, int mode, t_cmds *cmds);
 void	ft_error_handler(char *error, int signal, t_cmds *cmds, int mode);
 char	*merge(char *s1, char *s2);
 
 t_cmds	*ft_parser(int argc, char **argv, char **envp);
 int		ft_heredoc(char *limiter, t_cmds *cmds);
-
-int		ft_open(char *pathname, int mode, t_cmds *cmds);
 
 // ref https://www.rozmichelle.com/pipes-forks-dups/
 

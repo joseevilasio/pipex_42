@@ -6,36 +6,11 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 22:44:40 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/24 23:15:21 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/25 22:38:44 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
-
-int	ft_open(char *pathname, int mode, t_cmds *cmds)
-{
-	int	fd;
-
-	if (mode == 1)
-	{
-		if (access(pathname, F_OK) != 0 || access(pathname, R_OK) != 0)
-		{
-			perror("access()");
-			fd = open("/dev/null", O_RDONLY);
-		}
-		else
-			fd = open(pathname, O_RDONLY);
-	}
-	else if (mode == 2)
-		fd = open(pathname, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-	else if (mode == 3)
-		fd = open(pathname, O_WRONLY | O_CREAT | O_APPEND, 0777);
-	if (fd == -1)
-	{
-		ft_error_handler("open()", ERROR_FILE_OPEN, cmds, 0);
-	}
-	return (fd);
-}
 
 static int	ft_execve(t_cmds cmds, char **envp)
 {
@@ -66,16 +41,15 @@ static void	ft_child_process(int *fds, t_cmds *cmds, int i, char **envp)
 	if (i == 0)
 	{
 		if (ft_strncmp(cmds[0].fd_in, "here_doc", 8) == 0)
-			fd = ft_heredoc(cmds[0].limiter, cmds);
+			fd = ft_heredoc(cmds[i].limiter, cmds);
 		else
 			fd = ft_open(cmds[i].fd_in, 1, cmds);
 		dup2(fd, STDIN_FILENO);
 		close(fd);
-		unlink(".tmp");
 	}
 	if (i == cmds[0].end)
 	{
-		fd = ft_open(cmds[i].fd_out, 3, cmds);
+		fd = ft_open(cmds[i].fd_out, cmds[i].mode_outfile, cmds);
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
 	}
@@ -90,11 +64,11 @@ static void	ft_child_process(int *fds, t_cmds *cmds, int i, char **envp)
 
 static void	ft_parent_process(int *fds, pid_t pid)
 {
-	//alteracao // verificar se wait precisa se com if por conta de timeout
 	waitpid(pid, NULL, 0);
 	close(fds[1]);
 	dup2(fds[0], STDIN_FILENO);
 	close(fds[0]);
+	unlink(".tmp");
 }
 
 int	main(int argc, char **argv, char **envp)

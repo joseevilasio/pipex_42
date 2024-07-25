@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 17:50:31 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/24 22:45:42 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/07/25 22:28:01 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,6 @@ int	ft_free_args(t_cmds *cmds)
 		i++;
 	}
 	free(cmds);
-	return (0);
-}
-
-int	ft_free_paths(char **paths, int i)
-{
-	while (paths[++i])
-		free(paths[i]);
-	free(paths);
 	return (0);
 }
 
@@ -75,4 +67,29 @@ char	*merge(char *s1, char *s2)
 	free(s1);
 	s1 = NULL;
 	return (merge);
+}
+
+int	ft_open(char *pathname, int mode, t_cmds *cmds)
+{
+	int	fd;
+
+	if (mode == 1)
+	{
+		if (access(pathname, F_OK) != 0 || access(pathname, R_OK) != 0)
+		{
+			perror("access()");
+			fd = open("/dev/null", O_RDONLY);
+		}
+		else
+			fd = open(pathname, O_RDONLY);
+	}
+	else if (mode == 2)
+		fd = open(pathname, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	else if (mode == 3)
+		fd = open(pathname, O_WRONLY | O_CREAT | O_APPEND, 0777);
+	if (fd == -1)
+	{
+		ft_error_handler("open()", ERROR_FILE_OPEN, cmds, 0);
+	}
+	return (fd);
 }
