@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/21 13:41:12 by joneves-          #+#    #+#             */
-/*   Updated: 2024/08/01 20:42:31 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/08/01 23:20:16 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,13 @@ static char	*ft_findpath(char **envp, char **cmds)
 	if (!paths)
 		return (NULL);
 	i = 0;
-	while (paths[i++])
+	while (paths[i])
 	{
 		pathname = merge(merge(paths[i], "/"), cmds[0]);
 		if (access(pathname, F_OK) == 0 && access(pathname, X_OK) == 0)
 			return (ft_free_paths(paths, i), pathname);
 		free(pathname);
-		pathname = NULL;
+		i++;
 	}
 	free(paths);
 	return (NULL);

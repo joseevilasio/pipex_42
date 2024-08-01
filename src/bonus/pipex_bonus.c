@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 22:44:40 by joneves-          #+#    #+#             */
-/*   Updated: 2024/08/01 18:39:01 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/08/01 23:35:16 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,10 @@ static void	ft_child_process(int *fds, t_cmds *cmds, int i, char **envp)
 		ft_error_handler("pipex", ERROR_EXECVE, cmds, 0);
 }
 
-static void	ft_parent_process(int *fds, pid_t pid)
+static void	ft_parent_process(int *fds, pid_t pid, char *limiter)
 {
-	waitpid(pid, NULL, 0);
+	if (ft_strncmp("here_doc", limiter, 8) == 0)
+		waitpid(pid, NULL, 0);
 	close(fds[1]);
 	dup2(fds[0], STDIN_FILENO);
 	close(fds[0]);
@@ -94,7 +95,7 @@ int	main(int argc, char **argv, char **envp)
 			ft_error_handler("pipex", ERROR_FORK, cmds, 0);
 		if (pid[i] == 0)
 			ft_child_process(fds, cmds, i, envp);
-		ft_parent_process(fds, pid[i]);
+		ft_parent_process(fds, pid[i], cmds[i].limiter);
 		i++;
 	}
 	return (free(pid), ft_free_args(cmds));
