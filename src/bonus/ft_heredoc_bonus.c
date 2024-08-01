@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/21 17:33:41 by joneves-          #+#    #+#             */
-/*   Updated: 2024/08/01 20:31:51 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/08/01 23:14:05 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ static char	*join_line(char *before, char *buffer, char *limiter, t_cmds *cmds)
 	char	*swap;
 
 	cache = safe_malloc(cmds);
-	if (ft_strnstr(buffer, limiter, ft_strlen(buffer)))
+	if (ft_strnstr(buffer, limiter, ft_strlen(buffer))
+		&& ft_strlen(buffer) == ft_strlen(limiter) + 1)
 	{
 		new_limiter = ft_strjoin(limiter, "\n");
 		swap = ft_strtrim(buffer, new_limiter);
@@ -73,7 +74,7 @@ int	ft_heredoc(char *limiter, t_cmds *cmds)
 	buffer = safe_malloc(cmds);
 	cache = safe_malloc(cmds);
 	ft_printf("pipex heredoc> ");
-	while (!ft_strnstr(buffer, limiter, ft_strlen(buffer)))
+	while (cache)
 	{
 		read_size = read(STDIN_FILENO, buffer, BUFFER_SIZE);
 		if (read_size < 0)
@@ -84,11 +85,11 @@ int	ft_heredoc(char *limiter, t_cmds *cmds)
 		}
 		buffer[read_size] = '\0';
 		cache = join_line(cache, buffer, limiter, cmds);
-		if (ft_strnstr(buffer, limiter, ft_strlen(buffer)))
+		if (ft_strnstr(buffer, limiter, ft_strlen(buffer))
+			&& ft_strlen(buffer) == ft_strlen(limiter) + 1)
 			break ;
 		if (ft_strchr(buffer, '\n'))
 			ft_printf("pipex heredoc> ");
 	}
-	free(buffer);
-	return (write_fd(cache, cmds));
+	return (free(buffer), write_fd(cache, cmds));
 }
