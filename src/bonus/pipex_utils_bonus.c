@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 17:50:31 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/25 22:28:01 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/08/01 18:21:13 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,12 @@ int	ft_open(char *pathname, int mode, t_cmds *cmds)
 {
 	int	fd;
 
+	fd = -1;
 	if (mode == 1)
 	{
 		if (access(pathname, F_OK) != 0 || access(pathname, R_OK) != 0)
 		{
-			perror("access()");
+			perror("pipex");
 			fd = open("/dev/null", O_RDONLY);
 		}
 		else
@@ -89,7 +90,7 @@ int	ft_open(char *pathname, int mode, t_cmds *cmds)
 		fd = open(pathname, O_WRONLY | O_CREAT | O_APPEND, 0777);
 	if (fd == -1)
 	{
-		ft_error_handler("open()", ERROR_FILE_OPEN, cmds, 0);
+		ft_error_handler("pipex", ERROR_FILE_OPEN, cmds, 0);
 	}
 	return (fd);
 }

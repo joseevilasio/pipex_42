@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 20:07:30 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/21 13:42:12 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/08/01 18:22:17 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,15 @@
 # define PIPEX_H
 
 # define SUCCESS 0
-# define ERROR_ARGUMENTS 2
-# define ERROR_FILE_OPEN 3
-# define ERROR_FILE_OPEN_OUT 4
-# define ERROR_FILE_EXIST_OR_READ 5
-# define ERROR_MALLOC 6
-# define ERROR_PIPE 7
-# define ERROR_FORK 8
-# define ERROR_EXECVE 9
-# define ERROR_NOT_FOUND 10
+# define ERROR_ARGUMENTS 1
+# define ERROR_FILE_OPEN 2
+# define ERROR_FILE_OPEN_OUT 3
+# define ERROR_FILE_EXIST_OR_READ 4
+# define ERROR_MALLOC 5
+# define ERROR_PIPE 6
+# define ERROR_FORK 7
+# define ERROR_EXECVE 8
+# define ERROR_NOT_FOUND 9
 
 # include "libft/libft.h"
 # include <stdio.h>

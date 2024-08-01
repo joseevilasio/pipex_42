@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 20:07:30 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/25 22:32:18 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/08/01 20:36:25 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # define ERROR_NOT_FOUND 9 
 # define ERROR_WRITE 10
 # define ERROR_READ 11
+# define BUFFER_SIZE 1024
 
 # include "../libft/libft.h"
 # include <stdio.h>

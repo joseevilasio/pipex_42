@@ -33,7 +33,7 @@ $(NAME): $(OBJS)
 	ar rcs $(NAME).a ./*.o
 	$(CC) $(CFLAGS) $(NAME).c -o $(NAME) $(NAME).a $(LIBFT)/$(LIBFT).a
 
-bonus: fclean $(OBJS_BONUS)
+bonus: $(OBJS_BONUS)
 	make all -C $(LIBFT)
 	ar rcs bonus/$(NAME).a bonus/*.o
 	$(CC) $(CFLAGS) bonus/$(NAME)_bonus.c -o $(NAME) bonus/$(NAME).a $(LIBFT)/$(LIBFT).a

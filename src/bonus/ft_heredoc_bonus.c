@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/21 17:33:41 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/25 22:38:25 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/08/01 20:31:51 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static char	*safe_malloc(t_cmds *cmds)
 
 	str = (char *) malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!str)
-		ft_error_handler("malloc()", ERROR_MALLOC, cmds, 0);
+		ft_error_handler("pipex", ERROR_MALLOC, cmds, 0);
 	*str = 0;
 	return (str);
 }
@@ -31,7 +31,7 @@ static int	write_fd(char *str, t_cmds *cmds)
 	if (write(fd, str, ft_strlen(str)) == -1)
 	{
 		free(str);
-		ft_error_handler("write()", ERROR_WRITE, cmds, 0);
+		ft_error_handler("pipex", ERROR_WRITE, cmds, 0);
 	}
 	close(fd);
 	free(str);
@@ -46,7 +46,7 @@ static char	*join_line(char *before, char *buffer, char *limiter, t_cmds *cmds)
 	char	*swap;
 
 	cache = safe_malloc(cmds);
-	if (ft_strnstr(buffer, limiter, ft_strlen(limiter)))
+	if (ft_strnstr(buffer, limiter, ft_strlen(buffer)))
 	{
 		new_limiter = ft_strjoin(limiter, "\n");
 		swap = ft_strtrim(buffer, new_limiter);
@@ -59,7 +59,7 @@ static char	*join_line(char *before, char *buffer, char *limiter, t_cmds *cmds)
 	if (!cache)
 	{
 		free(buffer);
-		ft_error_handler("read()", ERROR_READ, cmds, 0);
+		ft_error_handler("pipex", ERROR_READ, cmds, 0);
 	}
 	return (cache);
 }
@@ -73,18 +73,18 @@ int	ft_heredoc(char *limiter, t_cmds *cmds)
 	buffer = safe_malloc(cmds);
 	cache = safe_malloc(cmds);
 	ft_printf("pipex heredoc> ");
-	while (!ft_strnstr(buffer, limiter, ft_strlen(limiter)))
+	while (!ft_strnstr(buffer, limiter, ft_strlen(buffer)))
 	{
 		read_size = read(STDIN_FILENO, buffer, BUFFER_SIZE);
 		if (read_size < 0)
 		{
 			free(buffer);
 			free(cache);
-			ft_error_handler("read()", ERROR_READ, cmds, 0);
+			ft_error_handler("pipex", ERROR_READ, cmds, 0);
 		}
 		buffer[read_size] = '\0';
 		cache = join_line(cache, buffer, limiter, cmds);
-		if (ft_strnstr(buffer, limiter, ft_strlen(limiter)))
+		if (ft_strnstr(buffer, limiter, ft_strlen(buffer)))
 			break ;
 		if (ft_strchr(buffer, '\n'))
 			ft_printf("pipex heredoc> ");

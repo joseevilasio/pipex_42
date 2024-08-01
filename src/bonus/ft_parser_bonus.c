@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/21 13:41:12 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/25 22:28:27 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/08/01 20:38:52 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ static char	*ft_findpath(char **envp, char **cmds)
 	int		i;
 
 	i = 0;
+	paths = NULL;
 	if (access(cmds[0], F_OK) == 0 && access(cmds[0], X_OK) == 0)
 		return (ft_strdup(cmds[0]));
 	while (envp[i] && !ft_strnstr(envp[i], "PATH=", 5))
@@ -36,14 +37,13 @@ static char	*ft_findpath(char **envp, char **cmds)
 	if (!paths)
 		return (NULL);
 	i = 0;
-	while (paths[i])
+	while (paths[i++])
 	{
 		pathname = merge(merge(paths[i], "/"), cmds[0]);
 		if (access(pathname, F_OK) == 0 && access(pathname, X_OK) == 0)
 			return (ft_free_paths(paths, i), pathname);
 		free(pathname);
 		pathname = NULL;
-		i++;
 	}
 	free(paths);
 	return (NULL);
@@ -62,7 +62,7 @@ static void	setup_cmds(t_cmds *cmds)
 
 static int	is_heredoc(char *argument)
 {
-	if (ft_strncmp(argument, "here_doc", 8) == 0)
+	if (ft_strncmp("here_doc", argument, 8) == 0)
 		return (3);
 	else
 		return (2);
@@ -77,7 +77,7 @@ t_cmds	*ft_parser(int argc, char **argv, char **envp)
 	n = 0;
 	cmds = (t_cmds *) malloc((argc - 2) * sizeof(t_cmds));
 	if (!cmds)
-		ft_error_handler("malloc()", ERROR_MALLOC, NULL, 0);
+		ft_error_handler("pipex", ERROR_MALLOC, NULL, 0);
 	while ((n + is_heredoc(argv[1])) < (argc - 1))
 	{
 		cmds[n].args = ft_split(argv[n + is_heredoc(argv[1])], ' ');
