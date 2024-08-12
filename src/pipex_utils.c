@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 17:50:31 by joneves-          #+#    #+#             */
-/*   Updated: 2024/07/21 13:45:03 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/08/07 19:44:02 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	ft_error_handler(char *error, int signal, t_cmds *cmds, int mode)
 	}
 	else
 	{
-		ft_printf("pipex: %s", error);
+		ft_printf("pipex: %s\n", error);
 		exit (signal);
 	}
 }

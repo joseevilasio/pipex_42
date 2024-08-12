@@ -6,7 +6,7 @@
 /*   By: joneves- <joneves-@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/21 13:41:12 by joneves-          #+#    #+#             */
-/*   Updated: 2024/08/01 23:20:16 by joneves-         ###   ########.fr       */
+/*   Updated: 2024/08/07 19:44:45 by joneves-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ t_cmds	*ft_parser(int argc, char **argv, char **envp)
 		cmds[n].args = ft_split(argv[n + 2], ' ');
 		pathname = ft_findpath(envp, cmds[n].args);
 		if (!pathname)
-			ft_printf("pipex: Command not found: %s", cmds[n].args[0]);
+			ft_printf("pipex: Command not found: %s\n", cmds[n].args[0]);
 		cmds[n].pathname = pathname;
 		cmds[n].fd_in = argv[1];
 		cmds[n].fd_out = argv[argc - 1];

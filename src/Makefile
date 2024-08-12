@@ -10,43 +10,32 @@ CFLAGS := -Wall -Wextra -Werror -g
 
 LIBFT := libft
 
-SRCS := pipex_utils.c ft_parser.c \
+SRCS := pipex.c pipex_utils.c ft_parser.c \
 
-OBJS := pipex_utils.o  ft_parser.o \
-
-SRCS_BONUS := bonus/pipex_utils_bonus.c bonus/ft_parser_bonus.c  \
-			bonus/ft_heredoc_bonus.c\
-
-OBJS_BONUS :=  bonus/pipex_utils_bonus.o  bonus/ft_parser_bonus.o \
-			bonus/ft_heredoc_bonus.o\
+SRCS_BONUS := bonus/pipex_bonus.c bonus/pipex_utils_bonus.c \
+			bonus/ft_parser_bonus.c bonus/ft_heredoc_bonus.c \
 
 all:	$(NAME)
 
-$(OBJS): $(SRCS)
-	$(CC) $(CFLAGS) -c $*.c -o $@
+# $(OBJS): $(SRCS)
+# 	$(CC) $(CFLAGS) -c $*.c -o $@
 
-$(OBJS_BONUS): $(SRCS_BONUS)
-	$(CC) $(CFLAGS) -c $*.c -o $@
+# $(OBJS_BONUS): $(SRCS_BONUS)
+# 	$(CC) $(CFLAGS) -c $*.c -o $@
 
-$(NAME): $(OBJS)
+$(NAME):
 	make all -C $(LIBFT)
-	ar rcs $(NAME).a ./*.o
-	$(CC) $(CFLAGS) $(NAME).c -o $(NAME) $(NAME).a $(LIBFT)/$(LIBFT).a
+	$(CC) $(CFLAGS) $(SRCS) -o $(NAME) $(LIBFT)/$(LIBFT).a
 
-bonus: $(OBJS_BONUS)
+bonus:
 	make all -C $(LIBFT)
-	ar rcs bonus/$(NAME).a bonus/*.o
-	$(CC) $(CFLAGS) bonus/$(NAME)_bonus.c -o $(NAME) bonus/$(NAME).a $(LIBFT)/$(LIBFT).a
+	$(CC) $(CFLAGS) $(SRCS_BONUS) -o $(NAME) $(LIBFT)/$(LIBFT).a
 
 clean:
 	make clean -C $(LIBFT)
-	rm -f ./*.o
-	rm -f ./bonus/*.o
 
 fclean:	clean
 	make fclean -C $(LIBFT)
-	rm -f ./*.a
-	rm -f ./bonus/*.a
 	rm -f $(NAME)
 	rm -f ./bonus/$(NAME)
 
