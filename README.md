@@ -1,24 +1,72 @@
+<p align="center">
+	<img src="https://img.shields.io/github/last-commit/joseevilasio/pipex_42?color=%2312bab9&style=flat-square"/>
+</p>
+
 # pipex
-This project is about handling pipes.
+
+#### Finished in: 2024-08-04
 
 ## About
-The Pipex project focuses on exploring a fundamental UNIX mechanism—pipes—by implementing them in a C program. The goal is to recreate the behavior of shell piping commands, enabling the redirection of input and output between processes. The program accepts file names and commands as arguments, mimicking the shell operation < file1 cmd1 | cmd2 > file2.
 
-Key Features:
+**Pipex** is a Unix-based project developed in C as part of the 42 School curriculum, focused on mastering file descriptors, process creation, and inter-process communication using pipes.
 
-- Handles standard shell commands using pipes.
-- Manages memory allocation and deallocation to prevent leaks.
-- Adheres to strict coding norms, ensuring robustness and error handling.
-  
-Bonus Features:
+The program mimics the shell's piping behavior (e.g., `ls | grep txt`) by executing chained commands with input/output redirection. In the **bonus part**, we extended the functionality to support multiple pipes, `here_doc`, and command path resolution with flexible argument parsing.
 
-- Supports **multiple pipes**, allowing chaining of several commands like ```< file1 cmd1 | cmd2 | cmd3 ... | cmdn > file2 ```.
-- Implements **heredoc**, handling the input redirection (<< LIMITER) to read from a given limiter and appending output (>>) to the target file. For example, ```cmd << LIMITER | cmd1 >> file```.
+Throughout the project, we explored:
+- `fork()`, `execve()`, and `wait()` system calls
+- File descriptor duplication and redirection with `dup2()`
+- Handling environment paths (`PATH`) and command resolution
+- Creating a shell-like environment with minimal tools
+
 ## Build
-To compile the library, simply use the makefile targets on the command line within the 'src' folder.
+
+Clone the repository:
+```shell
+git clone https://github.com/joseevilasio/pipex_42.git
 ```
-./src/make
+Enter the project directory:
+```shell
+cd pipex_42
+```
+Run `make` to build the mandatory version:
+```shell
+make
+```
+Run `make bonus` to build the extended version:
+```shell
+make bonus
 ```
 
 ## Usage
 
+### Mandatory Version:
+```shell
+./pipex infile "cmd1" "cmd2" outfile
+```
+Example:
+```shell
+./pipex input.txt "grep hello" "wc -l" output.txt
+```
+This will execute: `< input.txt grep hello | wc -l > output.txt`
+
+### Bonus Version:
+Supports:
+- Multiple commands (`cmd1 | cmd2 | ... | cmdN`)
+- `here_doc` functionality for inline input
+
+Example:
+```shell
+./pipex here_doc LIMITER "cmd1" "cmd2" outfile
+```
+
+## The Norm
+
+This project follows the 42 School's "The Norm" (_Version 4_). To review the Norm, [click here](https://github.com/42School/norminette/blob/master/pdf/en.norm.pdf).
+
+## Contributions
+
+Issues, improvements or suggestions are welcome via pull request or GitHub issue.
+
+### Message to Students
+
+Understanding the flow of file descriptors and how processes interact at the system level is key to this project. Take time to visualize your pipeline and test edge cases. The bonus part is not just harder — it’s where you grow the most.
